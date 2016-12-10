@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="rtge/rtge.js"></script>
+<script src="js/studio.js"></script>
+
+<script src="tilemaps/level1.js"></script>
+
+<style>
+	#screen_sizer {
+		width: 50%;
+		position: relative;
+		display: inline-block;
+	}
+	#screen_sizer:after {
+		padding-top: 93.75%;
+		display: block;
+		content: '';
+	}
+
+	#screen {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+	}
+</style>
+</head>
+<body onload="Studio.init()">
+<div id="screen_sizer">
+	<canvas id="screen" width="256px" height="240px" style="width: 100%; height:100%"></canvas>
+</div>
+</body>
+</html>
