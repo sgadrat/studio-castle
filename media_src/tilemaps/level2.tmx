@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="15" tilewidth="16" tileheight="16" nextobjectid="13">
- <tileset firstgid="1" name="background" tilewidth="16" tileheight="16" tilecount="120" columns="12">
-  <image source="tileset_background.png" width="192" height="160"/>
+ <tileset firstgid="1" name="background" tilewidth="16" tileheight="16" tilecount="156" columns="12">
+  <image source="tileset_background.png" width="192" height="208"/>
  </tileset>
  <layer name="walls" width="16" height="15">
   <data encoding="csv">
@@ -36,6 +36,25 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="message" width="16" height="15" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,57,57,57,139,143,135,138,124,57,57,0,0,0,
+0,0,0,57,57,57,57,57,57,57,57,57,57,0,0,0,
+0,0,0,57,136,138,125,139,139,57,80,81,57,0,0,0,
+0,0,0,57,140,135,57,139,132,121,139,128,57,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

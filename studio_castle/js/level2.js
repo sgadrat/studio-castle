@@ -1,5 +1,7 @@
 var Level2 = {
 	triggers: {},
+	showingMessage: false,
+	lastActionBtnState: null,
 
 	init: function() {
 		Level2.triggers = {
@@ -30,7 +32,33 @@ var Level2 = {
 		level_layer.data[7*16+7] = Studio.TILE_EMPTY;
 		level_layer.data[7*16+8] = Studio.TILE_EMPTY;
 
+		var message_layer = Studio.findNamedObject(Studio.currentMap.layers, 'message');
+		message_layer.visible = true;
+		Studio.hero.freezed = true;
+		Studio.hero.visible = false;
+		Level2.lastActionBtnState = Studio.inputState.action;
+		Level2.showingMessage = true;
+
 		Studio.updateCurrentMap();
+	},
+
+	endMessage: function() {
+		var message_layer = Studio.findNamedObject(Studio.currentMap.layers, 'message');
+		message_layer.visible = false;
+		Studio.hero.freezed = false;
+		Studio.hero.visible = true;
+		Level2.showingMessage = false;
+		Studio.updateCurrentMap();
+	},
+
+	inputChanged: function() {
+		if (Level2.showingMessage) {
+			var newActionState = Studio.inputState.action;
+			if (Level2.lastActionBtnState == 0 && newActionState == 1) {
+				Level2.endMessage();
+			}
+			Level2.lastActionBtnState = newActionState;
+		}
 	},
 
 	triggerActivated: function(trigger) {
