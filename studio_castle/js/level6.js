@@ -1,5 +1,6 @@
 var Level6 = {
 	boss: null,
+	gameoverBegin: null,
 
 	init: function() {
 		Level6.boss = new Level6.Boss(192, 128);
@@ -14,7 +15,18 @@ var Level6 = {
 
 		Studio.findNamedObject(Studio.currentMap.layers, 'gameover').visible = true;
 		Studio.updateCurrentMap();
+
+		Level6.gameoverBegin = Date.now();
+
 		document.getElementById('sound_gameover').play();
+	},
+
+	inputChanged: function() {
+		if (Level6.gameoverBegin != null && Date.now() - Level6.gameoverBegin > 1000) {
+			if (Studio.inputState.action == 1) {
+				window.location.reload();
+			}
+		}
 	},
 
 	Boss: function(x, y) {
