@@ -38,6 +38,9 @@ var Studio = {
 		camera.x = 0;
 		camera.y = 0;
 
+		Studio.currentMap = level1_map;
+		Studio.currentLevel = Level1;
+
 		rtge.init(
 			'screen',
 			{
@@ -57,6 +60,45 @@ var Studio = {
 		window.addEventListener("keyup", Studio.keyup, true);
 	},
 
+	level1Complete: function() {
+		alert('GG');
+	},
+
+	currentLevel: null,
+
+	currentMap: null,
+
+	/* Ensure that the map is redrawn (even with rtge optimizations activated) */
+	updateCurrentMap: function() {
+		rtge.images['tilemaps/level1'] = {
+			'type': 'tilemap',
+			'tilemap': level1_map
+		};
+	},
+
+	/* Find an object in array having a specified "name" attribute */
+	findNamedObject: function(list, name) {
+		var index;
+		var object;
+		for (index = 0; index < list.length; ++index) {
+			object = list[index];
+			if (object.name == name) {
+				return object;
+			}
+		}
+		return null;
+	},
+
+	/* Get the objects array from an object layer of the current map */
+	getMapObjectLayer: function(name) {
+		var layer = Studio.findNamedObject(Studio.currentMap.layers, name);
+		if (layer !== null) {
+			return layer.objects;
+		}
+		return [];
+	},
+
+	/* State of the input buttons (0: release; 1: pushed) */
 	inputState: {
 		up: 0, right: 0, down: 0, left: 0,
 		action: 0
@@ -107,6 +149,15 @@ var Studio = {
 		}
 	},
 
+	pointInRectangle: function(point, rect) {
+		return (
+			point.x >= rect.x &&
+			point.x <= rect.x + rect.width &&
+			point.y >= rect.y &&
+			point.y <= rect.y + rect.height
+		);
+	},
+
 	Hero: function(x, y) {
 		rtge.DynObject.call(this);
 		this.x = x;
@@ -117,6 +168,10 @@ var Studio = {
 		this.animation = 'hero.idle';
 
 		this.tick = function(timeElapsed) {
+			// Refuse to consider too big timeElapsed values
+			timeElapsed = Math.min(timeElapsed, 500);
+
+			// Compute movement from input
 			var velocity = { x: 0, y: 0 };
 			velocity.x -= Studio.inputState.left;
 			velocity.x += Studio.inputState.right;
@@ -139,8 +194,40 @@ var Studio = {
 				this.animation = 'hero.idle';
 			}
 
-			this.x += velocity.x * timeElapsed * 0.05;
-			this.y += velocity.y * timeElapsed * 0.05;
+			var landing_x = this.x + velocity.x * timeElapsed * 0.05;
+			var landing_y = this.y + velocity.y * timeElapsed * 0.05;
+
+			// Apply movement restictions
+			landing_x = Math.max(landing_x, 32+5);
+			landing_x = Math.min(landing_x, 223-5);
+			landing_y = Math.max(landing_y, 32+5);
+			landing_y = Math.min(landing_y, 213-5);
+
+			var blockers = Studio.getMapObjectLayer('blockers');
+			for (var blocker_index = 0; blocker_index < blockers.length; ++blocker_index) {
+				var blocker = blockers[blocker_index];
+				if (blocker.visible && Studio.pointInRectangle({x: landing_x, y: landing_y}, blocker)) {
+					landing_x = this.x;
+					landing_y = this.y;
+					break;
+				}
+			}
+
+			this.x = landing_x;
+			this.y = landing_y;
+
+			// Trigger walkables events
+			var walkables = Studio.getMapObjectLayer('walkable');
+			for (var walkable_index = 0; walkable_index < walkables.length; ++walkable_index) {
+				if (Studio.pointInRectangle({x: landing_x, y: landing_y}, walkables[walkable_index])) {
+					Studio.currentLevel.walkableActivation(walkables[walkable_index].name);
+				}
+			}
 		};
 	},
+
+	// Usefull tile indexes from the tileset
+	TILE_EMPTY: 0,
+	TILE_BUTTON_DOWN: 25,
+	TILE_PILLAR_DOWN: 27,
 };
