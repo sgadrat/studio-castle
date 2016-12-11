@@ -73,8 +73,9 @@ var Studio = {
 
 	level1Complete: function() {
 		Studio.currentMap = level2_map;
-		Studio.updateCurrentMap();
 		Studio.currentLevel = Level2;
+		Level2.init();
+		Studio.updateCurrentMap();
 	},
 
 	level2Complete: function() {
@@ -176,7 +177,14 @@ var Studio = {
 	},
 
 	rectanglesOverlap: function(rect1, rect2) {
-		return true; //TODO
+		var r1 = { 'top': rect1.y, 'bot': rect1.y+rect1.height, 'left': rect1.x, 'right': rect1.x+rect1.width };
+		var r2 = { 'top': rect2.y, 'bot': rect2.y+rect2.height, 'left': rect2.x, 'right': rect2.x+rect2.width };
+		return (
+			r1.bot >= r2.top &&
+			r1.top <= r2.bot &&
+			r1.right >= r2.left &&
+			r1.left <= r2.right
+		);
 	},
 
 	hero: null,
@@ -276,8 +284,13 @@ var Studio = {
 
 		this.duration = 250;
 		this.orientation = orientation;
+		this.stroke = false;
 
 		this.strike = function() {
+			if (this.stroke) {
+				return;
+			}
+
 			var hitbox = {
 				x: this.x + {'top':-1, 'right':0, 'bot':-1, 'left':-12}[this.orientation],
 				y: this.y + {'top':-12, 'right':-1, 'bot':0, 'left':-1}[this.orientation],
@@ -290,6 +303,8 @@ var Studio = {
 				var interactive = interactives[interactive_index];
 				if (Studio.rectanglesOverlap(interactive, hitbox)) {
 					Studio.currentLevel.interactiveActivation(interactive.name);
+					this.stroke = true;
+					break;
 				}
 			}
 		}
@@ -313,8 +328,35 @@ var Studio = {
 		this.move();
 	},
 
+	Trigger: function(x, y, callback) {
+		this.state = false;
+		this.x = x;
+		this.y = y;
+		this.callback = callback;
+
+		this.activate = function() {
+			this.state = !this.state;
+			var level_layer = Studio.findNamedObject(Studio.currentMap.layers, 'level');
+			if (this.state) {
+				level_layer.data[this.y*16+this.x] = Studio.TILE_TRIGGER_ON;
+			}else {
+				level_layer.data[this.y*16+this.x] = Studio.TILE_TRIGGER_OFF;
+			}
+
+			if (this.callback !== null) {
+				this.callback(this);
+			}
+
+			Studio.updateCurrentMap();
+		};
+	},
+
 	// Usefull tile indexes from the tileset
-	TILE_EMPTY: 0,
 	TILE_BUTTON_DOWN: 25,
+	TILE_EMPTY: 0,
+	TILE_PILLAR_BOT: 26,
 	TILE_PILLAR_DOWN: 27,
+	TILE_PILLAR_TOP: 14,
+	TILE_TRIGGER_OFF: 17,
+	TILE_TRIGGER_ON: 18,
 };
