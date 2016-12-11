@@ -16,22 +16,33 @@ var Studio = {
 			'imgs/hero/bot_2.png',
 			'imgs/hero/left_1.png',
 			'imgs/hero/left_2.png',
+			'imgs/sword/top.png',
+			'imgs/sword/right.png',
+			'imgs/sword/bot.png',
+			'imgs/sword/left.png',
 		];
 
 		var animations = {};
-		animations['hero.idle'] = new rtge.Animation();
-		animations['hero.idle'].steps = ['imgs/hero/top_1.png'];
-		animations['hero.idle'].durations = [3600000];
 		var orientations = ['top', 'right', 'bot', 'left'];
 		for (var i = 0; i < orientations.length; ++i) {
 			orientation = orientations[i];
+
 			animations['hero.walk.'+orientation] = new rtge.Animation();
 			animations['hero.walk.'+orientation].steps = ['imgs/hero/'+orientation+'_1.png', 'imgs/hero/'+orientation+'_2.png'];
 			animations['hero.walk.'+orientation].durations = [250, 250];
+
+			animations['hero.idle.'+orientation] = new rtge.Animation();
+			animations['hero.idle.'+orientation].steps = ['imgs/hero/'+orientation+'_1.png'];
+			animations['hero.idle.'+orientation].durations = [3600000];
+
+			animations['sword.'+orientation] = new rtge.Animation();
+			animations['sword.'+orientation].steps = ['imgs/sword/'+orientation+'.png'];
+			animations['sword.'+orientation].durations = [3600000];
 		}
 
+		Studio.hero = new Studio.Hero(128, 128);
 		var objects = [
-			new Studio.Hero(128, 128),
+			Studio.hero,
 		];
 
 		var camera = new rtge.Camera();
@@ -61,6 +72,12 @@ var Studio = {
 	},
 
 	level1Complete: function() {
+		Studio.currentMap = level2_map;
+		Studio.updateCurrentMap();
+		Studio.currentLevel = Level2;
+	},
+
+	level2Complete: function() {
 		alert('GG');
 	},
 
@@ -72,7 +89,7 @@ var Studio = {
 	updateCurrentMap: function() {
 		rtge.images['tilemaps/level1'] = {
 			'type': 'tilemap',
-			'tilemap': level1_map
+			'tilemap': Studio.currentMap
 		};
 	},
 
@@ -158,6 +175,12 @@ var Studio = {
 		);
 	},
 
+	rectanglesOverlap: function(rect1, rect2) {
+		return true; //TODO
+	},
+
+	hero: null,
+
 	Hero: function(x, y) {
 		rtge.DynObject.call(this);
 		this.x = x;
@@ -165,7 +188,11 @@ var Studio = {
 		this.z = 1;
 		this.anchorX = 8;
 		this.anchorY = 14;
-		this.animation = 'hero.idle';
+		this.animation = 'hero.idle.bot';
+
+		this.orientation = 'bot';
+		this.hasSword = false;
+		this.swordCooldown = 0;
 
 		this.tick = function(timeElapsed) {
 			// Refuse to consider too big timeElapsed values
@@ -180,18 +207,20 @@ var Studio = {
 
 			if (velocity.y != 0) {
 				if (velocity.y > 0) {
-					this.animation = 'hero.walk.bot';
+					this.orientation = 'bot';
 				}else {
-					this.animation = 'hero.walk.top';
+					this.orientation = 'top';
 				}
+				this.animation = 'hero.walk.'+this.orientation;
 			}else if (velocity.x != 0) {
 				if (velocity.x > 0) {
-					this.animation = 'hero.walk.right';
+					this.orientation = 'right';
 				}else {
-					this.animation = 'hero.walk.left';
+					this.orientation = 'left';
 				}
+				this.animation = 'hero.walk.'+this.orientation;
 			}else {
-				this.animation = 'hero.idle';
+				this.animation = 'hero.idle.'+this.orientation;
 			}
 
 			var landing_x = this.x + velocity.x * timeElapsed * 0.05;
@@ -219,11 +248,69 @@ var Studio = {
 			// Trigger walkables events
 			var walkables = Studio.getMapObjectLayer('walkable');
 			for (var walkable_index = 0; walkable_index < walkables.length; ++walkable_index) {
-				if (Studio.pointInRectangle({x: landing_x, y: landing_y}, walkables[walkable_index])) {
+				var walkable = walkables[walkable_index];
+				if (walkable.visible && Studio.pointInRectangle({x: landing_x, y: landing_y}, walkable)) {
 					Studio.currentLevel.walkableActivation(walkables[walkable_index].name);
 				}
 			}
+
+			// Strike
+			if (this.hasSword) {
+				this.swordCooldown = Math.max(0, this.swordCooldown - timeElapsed);
+				if (Studio.inputState.action == 1 && this.swordCooldown == 0) {
+					this.swordCooldown = 500;
+					rtge.addObject(new Studio.Sword(
+						this.orientation
+					));
+				}
+			}
 		};
+	},
+
+	Sword: function(orientation) {
+		rtge.DynObject.call(this);
+		this.z = 1;
+		this.anchorX = {'top':7, 'right':2, 'bot':7, 'left':13}[orientation];
+		this.anchorY = {'top':13, 'right':8, 'bot':2, 'left':8}[orientation];
+		this.animation = 'sword.'+orientation;
+
+		this.duration = 250;
+		this.orientation = orientation;
+
+		this.strike = function() {
+			var hitbox = {
+				x: this.x + {'top':-1, 'right':0, 'bot':-1, 'left':-12}[this.orientation],
+				y: this.y + {'top':-12, 'right':-1, 'bot':0, 'left':-1}[this.orientation],
+				width: {'top':3, 'right':12, 'bot':3, 'left':12}[this.orientation],
+				height: {'top':12, 'right':3, 'bot':12, 'left':3}[this.orientation]
+			};
+
+			var interactives = Studio.getMapObjectLayer('interactive');
+			for (var interactive_index = 0; interactive_index < interactives.length; ++interactive_index) {
+				var interactive = interactives[interactive_index];
+				if (Studio.rectanglesOverlap(interactive, hitbox)) {
+					Studio.currentLevel.interactiveActivation(interactive.name);
+				}
+			}
+		}
+
+		this.tick = function(timeElapsed) {
+			this.duration -= timeElapsed;
+			if (this.duration <= 0) {
+				rtge.removeObject(this);
+				return;
+			}
+
+			this.move();
+		};
+
+		this.move = function() {
+			this.x = Studio.hero.x + {'top':0, 'right':5, 'bot':0, 'left':-5}[this.orientation];
+			this.y = Studio.hero.y + {'top':-5, 'right':-5, 'bot':0, 'left':-5}[this.orientation];
+
+			this.strike();
+		};
+		this.move();
 	},
 
 	// Usefull tile indexes from the tileset
