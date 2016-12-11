@@ -2,10 +2,10 @@ var Studio = {
 	init: function() {
 		var graphics = [
 			{
-				'name': 'tilemaps/level1',
+				'name': 'tilemaps/level',
 				'data': {
 					'type': 'tilemap',
-					'tilemap': level1_map
+					'tilemap': title_map
 				}
 			},
 			'imgs/hero/top_1.png',
@@ -65,13 +65,15 @@ var Studio = {
 		camera.x = 0;
 		camera.y = 0;
 
-		Studio.currentMap = level1_map;
-		Studio.currentLevel = Level1;
+		Studio.currentMap = title_map;
+		Studio.currentLevel = TitleScreen;
+
+		TitleScreen.init();
 
 		rtge.init(
 			'screen',
 			{
-				'terrain': 'tilemaps/level1',
+				'terrain': 'tilemaps/level',
 				'objects': objects
 			},
 			animations,
@@ -96,6 +98,12 @@ var Studio = {
 		//Studio.level4Complete();
 		//rtge.removeObject(Level4.platform);
 		//Studio.level5Complete();
+	},
+
+	startLevel1: function() {
+		Studio.currentMap = level1_map;
+		Studio.currentLevel = Level1;
+		Studio.updateCurrentMap();
 	},
 
 	level1Complete: function() {
@@ -140,7 +148,7 @@ var Studio = {
 
 	/* Ensure that the map is redrawn (even with rtge optimizations activated) */
 	updateCurrentMap: function() {
-		rtge.images['tilemaps/level1'] = {
+		rtge.images['tilemaps/level'] = {
 			'type': 'tilemap',
 			'tilemap': Studio.currentMap
 		};

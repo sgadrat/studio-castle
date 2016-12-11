@@ -62,8 +62,10 @@ var Level6 = {
 			},
 
 			updateVelocity: function(boss) {
-				boss.velocity.y = 100 * (Studio.hero.y - boss.y) / Math.abs(Studio.hero.y - boss.y);
-				boss.velocity.x = 100 * (Studio.hero.x - boss.x) / Math.abs(Studio.hero.x - boss.x);
+				var diffY = Studio.hero.y - boss.y;
+				var diffX = Studio.hero.x - boss.x;
+				boss.velocity.y = (diffY == 0 ? 0 : 100 * diffY / Math.abs(diffY));
+				boss.velocity.x = (diffX == 0 ? 0 : 100 * diffX / Math.abs(diffX));
 			},
 
 			tick: function(boss, timeElapsed) {
