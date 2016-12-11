@@ -20,10 +20,14 @@ var Studio = {
 			'imgs/sword/right.png',
 			'imgs/sword/bot.png',
 			'imgs/sword/left.png',
+			'imgs/platform.png',
 		];
 
 		var animations = {};
 		var orientations = ['top', 'right', 'bot', 'left'];
+		animations['platform'] = new rtge.Animation();
+		animations['platform'].steps = ['imgs/platform.png'];
+		animations['platform'].durations = [3600000];
 		for (var i = 0; i < orientations.length; ++i) {
 			orientation = orientations[i];
 
@@ -69,6 +73,14 @@ var Studio = {
 
 		window.addEventListener("keydown", Studio.keydown, true);
 		window.addEventListener("keyup", Studio.keyup, true);
+
+		// Cheat
+		//Studio.level1Complete();
+		//Studio.hero.hasSword = true;
+		//Studio.level2Complete();
+		//Studio.hero.x = 44;
+		//Studio.hero.y = 72;
+		//Studio.level3Complete();
 	},
 
 	level1Complete: function() {
@@ -86,6 +98,13 @@ var Studio = {
 	},
 
 	level3Complete: function() {
+		Studio.currentMap = level4_map;
+		Studio.currentLevel = Level4;
+		Level4.init();
+		Studio.updateCurrentMap();
+	},
+
+	level4Complete: function() {
 		alert('GG');
 	},
 
