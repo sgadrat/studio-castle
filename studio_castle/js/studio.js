@@ -16,6 +16,14 @@ var Studio = {
 			'imgs/hero/bot_2.png',
 			'imgs/hero/left_1.png',
 			'imgs/hero/left_2.png',
+			'imgs/boss/top_1.png',
+			'imgs/boss/top_2.png',
+			'imgs/boss/right_1.png',
+			'imgs/boss/right_2.png',
+			'imgs/boss/bot_1.png',
+			'imgs/boss/bot_2.png',
+			'imgs/boss/left_1.png',
+			'imgs/boss/left_2.png',
 			'imgs/sword/top.png',
 			'imgs/sword/right.png',
 			'imgs/sword/bot.png',
@@ -38,6 +46,10 @@ var Studio = {
 			animations['hero.idle.'+orientation] = new rtge.Animation();
 			animations['hero.idle.'+orientation].steps = ['imgs/hero/'+orientation+'_1.png'];
 			animations['hero.idle.'+orientation].durations = [3600000];
+
+			animations['boss.walk.'+orientation] = new rtge.Animation();
+			animations['boss.walk.'+orientation].steps = ['imgs/boss/'+orientation+'_1.png', 'imgs/boss/'+orientation+'_2.png'];
+			animations['boss.walk.'+orientation].durations = [250, 250];
 
 			animations['sword.'+orientation] = new rtge.Animation();
 			animations['sword.'+orientation].steps = ['imgs/sword/'+orientation+'.png'];
@@ -75,14 +87,15 @@ var Studio = {
 		window.addEventListener("keyup", Studio.keyup, true);
 
 		// Cheat
-		Studio.level1Complete();
-		Studio.hero.hasSword = true;
-		Studio.level2Complete();
-		Studio.hero.x = 44;
-		Studio.hero.y = 72;
-		Studio.level3Complete();
-		Studio.level4Complete();
-		rtge.removeObject(Level4.platform);
+		//Studio.level1Complete();
+		//Studio.hero.hasSword = true;
+		//Studio.level2Complete();
+		//Studio.hero.x = 44;
+		//Studio.hero.y = 72;
+		//Studio.level3Complete();
+		//Studio.level4Complete();
+		//rtge.removeObject(Level4.platform);
+		//Studio.level5Complete();
 	},
 
 	level1Complete: function() {
@@ -114,6 +127,13 @@ var Studio = {
 	},
 
 	level5Complete: function() {
+		Studio.currentMap = level6_map;
+		Studio.currentLevel = Level6;
+		Level6.init();
+		Studio.updateCurrentMap();
+	},
+
+	level6Complete: function() {
 		if (typeof ugly_global === 'undefined') {
 			ugly_global = 'true';
 			alert('GG');
@@ -236,6 +256,7 @@ var Studio = {
 	},
 
 	hero: null,
+	sword: null,
 
 	Hero: function(x, y) {
 		rtge.DynObject.call(this);
@@ -321,9 +342,8 @@ var Studio = {
 				this.swordCooldown = Math.max(0, this.swordCooldown - timeElapsed);
 				if (Studio.inputState.action == 1 && this.swordCooldown == 0) {
 					this.swordCooldown = 500;
-					rtge.addObject(new Studio.Sword(
-						this.orientation
-					));
+					Studio.sword = new Studio.Sword(this.orientation);
+					rtge.addObject(Studio.sword);
 				}
 			}
 		};
@@ -345,12 +365,7 @@ var Studio = {
 				return;
 			}
 
-			var hitbox = {
-				x: this.x + {'top':-1, 'right':0, 'bot':-1, 'left':-12}[this.orientation],
-				y: this.y + {'top':-12, 'right':-1, 'bot':0, 'left':-1}[this.orientation],
-				width: {'top':3, 'right':12, 'bot':3, 'left':12}[this.orientation],
-				height: {'top':12, 'right':3, 'bot':12, 'left':3}[this.orientation]
-			};
+			var hitbox = this.getHitbox();
 
 			var interactives = Studio.getMapObjectLayer('interactive');
 			for (var interactive_index = 0; interactive_index < interactives.length; ++interactive_index) {
@@ -361,12 +376,22 @@ var Studio = {
 					break;
 				}
 			}
-		}
+		};
+
+		this.getHitbox = function() {
+			return {
+				x: this.x + {'top':-1, 'right':0, 'bot':-1, 'left':-12}[this.orientation],
+				y: this.y + {'top':-12, 'right':-1, 'bot':0, 'left':-1}[this.orientation],
+				width: {'top':3, 'right':12, 'bot':3, 'left':12}[this.orientation],
+				height: {'top':12, 'right':3, 'bot':12, 'left':3}[this.orientation]
+			};
+		};
 
 		this.tick = function(timeElapsed) {
 			this.duration -= timeElapsed;
 			if (this.duration <= 0) {
 				rtge.removeObject(this);
+				Studio.sword = null;
 				return;
 			}
 

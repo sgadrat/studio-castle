@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="15" tilewidth="16" tileheight="16" nextobjectid="36">
- <tileset firstgid="1" name="background" tilewidth="16" tileheight="16" tilecount="120" columns="12">
-  <image source="tileset_background.png" width="192" height="160"/>
+ <tileset firstgid="1" name="background" tilewidth="16" tileheight="16" tilecount="156" columns="12">
+  <image source="tileset_background.png" width="192" height="208"/>
  </tileset>
  <layer name="walls" width="16" height="15">
   <data encoding="csv">
@@ -41,9 +41,28 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="blockers">
+ <layer name="gameover" width="16" height="15" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,123,135,134,127,138,121,140,141,132,121,140,129,135,134,0,
+0,57,57,57,57,57,57,57,57,57,57,57,57,57,57,0,
+0,57,145,135,141,57,131,129,132,132,125,124,57,57,57,0,
+0,57,140,128,125,57,122,129,127,57,127,141,145,57,57,0,
+0,57,57,57,57,57,57,57,57,57,57,57,57,57,57,0,
+0,57,128,129,139,57,135,138,136,128,121,134,139,57,57,0,
+0,57,122,141,138,129,125,124,57,145,135,141,57,57,57,0,
+0,57,129,134,57,140,128,129,139,57,57,57,57,57,57,0,
+0,57,125,144,129,140,132,125,139,139,57,138,135,135,133,0,
+0,57,57,57,57,57,57,57,57,57,57,57,57,57,57,0,
+0,57,130,141,139,140,129,123,125,57,128,121,139,57,57,0,
+0,57,122,125,125,134,57,139,125,138,142,125,124,57,57,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="blockers" visible="0">
   <object id="1" name="fence" x="48" y="48" width="176" height="16"/>
  </objectgroup>
- <objectgroup color="#73d216" name="interactive"/>
- <objectgroup color="#729fcf" name="walkable"/>
+ <objectgroup color="#73d216" name="interactive" visible="0"/>
+ <objectgroup color="#729fcf" name="walkable" visible="0"/>
 </map>
