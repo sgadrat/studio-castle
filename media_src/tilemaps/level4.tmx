@@ -41,14 +41,14 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="blockers">
+ <objectgroup name="blockers" visible="0">
   <object id="1" name="fence" x="48" y="48" width="176" height="16"/>
   <object id="6" name="pillar" x="160" y="32" width="16" height="16"/>
  </objectgroup>
- <objectgroup color="#73d216" name="interactive"/>
- <objectgroup color="#729fcf" name="walkable">
-  <object id="11" name="walkable_1" x="176" y="32" width="16" height="16"/>
-  <object id="31" name="walkable_2" x="208" y="128" width="16" height="16"/>
+ <objectgroup color="#73d216" name="interactive" visible="0"/>
+ <objectgroup color="#729fcf" name="walkable" visible="0">
+  <object id="11" name="goal" x="176" y="32" width="16" height="16"/>
+  <object id="31" name="pillar_cmd" x="208" y="128" width="16" height="16"/>
   <object id="32" name="hole_1" x="80" y="64" width="144" height="64"/>
   <object id="33" name="hole_2" x="80" y="144" width="144" height="64"/>
   <object id="34" name="hole_3" x="80" y="128" width="112" height="16"/>

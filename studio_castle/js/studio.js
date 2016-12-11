@@ -79,6 +79,13 @@ var Studio = {
 	},
 
 	level2Complete: function() {
+		Studio.currentMap = level3_map;
+		Studio.currentLevel = Level3;
+		Level3.init();
+		Studio.updateCurrentMap();
+	},
+
+	level3Complete: function() {
 		alert('GG');
 	},
 
@@ -353,6 +360,7 @@ var Studio = {
 
 	// Usefull tile indexes from the tileset
 	TILE_BUTTON_DOWN: 25,
+	TILE_DOOR: 10,
 	TILE_EMPTY: 0,
 	TILE_PILLAR_BOT: 26,
 	TILE_PILLAR_DOWN: 27,
