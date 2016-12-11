@@ -5,7 +5,7 @@ var Level4 = {
 
 	init: function() {
 		Level4.walkables = {
-			'goal': Studio.level4Complete,
+			'goal': Level4.goalReached,
 			'pillar_cmd': Level4.openPillar,
 			'hole_1': Level4.fall,
 			'hole_2': Level4.fall,
@@ -28,6 +28,11 @@ var Level4 = {
 			Studio.hero.x = 44;
 			Studio.hero.y = 72;
 		}
+	},
+
+	goalReached: function() {
+		rtge.removeObject(Level4.platform);
+		Studio.level4Complete();
 	},
 
 	openPillar: function() {

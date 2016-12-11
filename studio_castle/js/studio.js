@@ -75,12 +75,14 @@ var Studio = {
 		window.addEventListener("keyup", Studio.keyup, true);
 
 		// Cheat
-		//Studio.level1Complete();
-		//Studio.hero.hasSword = true;
-		//Studio.level2Complete();
-		//Studio.hero.x = 44;
-		//Studio.hero.y = 72;
-		//Studio.level3Complete();
+		Studio.level1Complete();
+		Studio.hero.hasSword = true;
+		Studio.level2Complete();
+		Studio.hero.x = 44;
+		Studio.hero.y = 72;
+		Studio.level3Complete();
+		Studio.level4Complete();
+		rtge.removeObject(Level4.platform);
 	},
 
 	level1Complete: function() {
@@ -105,7 +107,17 @@ var Studio = {
 	},
 
 	level4Complete: function() {
-		alert('GG');
+		Studio.currentMap = level5_map;
+		Studio.currentLevel = Level5;
+		Level5.init();
+		Studio.updateCurrentMap();
+	},
+
+	level5Complete: function() {
+		if (typeof ugly_global === 'undefined') {
+			ugly_global = 'true';
+			alert('GG');
+		}
 	},
 
 	currentLevel: null,
@@ -149,29 +161,36 @@ var Studio = {
 	},
 
 	keyboardInput: function(key, value) {
+		var handled = true;
 		switch (key) {
 			case "Up":
 			case "ArrowUp":
 				Studio.inputState.up = value;
-				return true;
+				break;
 			case "Right":
 			case "ArrowRight":
 				Studio.inputState.right = value;
-				return true;
+				break;
 			case "Down":
 			case "ArrowDown":
 				Studio.inputState.down = value;
-				return true;
+				break;
 			case "Left":
 			case "ArrowLeft":
 				Studio.inputState.left = value;
-				return true;
+				break;
 			case "Spacebar":
 			case " ":
 				Studio.inputState.action = value;
-				return true;
+				break;
+			default:
+				handled = false;
 		};
-		return false;
+
+		if (handled && typeof Studio.currentLevel.inputChanged !== 'undefined') {
+			Studio.currentLevel.inputChanged();
+		}
+		return handled;
 	},
 
 	keydown: function(e) {
@@ -189,6 +208,9 @@ var Studio = {
 		}
 		e.preventDefault();
 		if (Studio.keyboardInput(e.key, 0)) {
+			if (typeof Studio.currentLevel.inputChanged !== 'undefined') {
+				Studio.currentLevel.inputChanged();
+			}
 			e.preventDefault();
 		}
 	},
@@ -227,8 +249,14 @@ var Studio = {
 		this.orientation = 'bot';
 		this.hasSword = false;
 		this.swordCooldown = 0;
+		this.freezed = false;
 
 		this.tick = function(timeElapsed) {
+			// Do nothing when freezed
+			if (this.freezed) {
+				return;
+			}
+
 			// Refuse to consider too big timeElapsed values
 			timeElapsed = Math.min(timeElapsed, 500);
 
@@ -386,4 +414,5 @@ var Studio = {
 	TILE_PILLAR_TOP: 14,
 	TILE_TRIGGER_OFF: 17,
 	TILE_TRIGGER_ON: 18,
+	TILES_GLYPHS: [47,48,59,60,71,72,83,84],
 };

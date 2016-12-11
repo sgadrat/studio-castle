@@ -41,14 +41,33 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="blockers">
+ <layer name="dialog" width="16" height="15" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,57,72,48,59,72,57,47,83,72,57,0,0,0,
+0,0,0,57,72,60,57,47,71,84,57,47,57,0,0,0,
+0,0,0,57,71,47,60,72,71,57,83,71,57,0,0,0,
+0,0,0,57,57,57,57,80,81,57,57,57,57,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="blockers" visible="0">
   <object id="1" name="fence" x="48" y="48" width="176" height="16"/>
   <object id="6" name="pillar" x="192" y="32" width="16" height="16"/>
  </objectgroup>
- <objectgroup color="#73d216" name="interactive">
+ <objectgroup color="#73d216" name="interactive" visible="0">
   <object id="35" name="king" x="128" y="64" width="16" height="16"/>
  </objectgroup>
- <objectgroup color="#729fcf" name="walkable">
-  <object id="11" name="walkable_1" x="208" y="32" width="16" height="16"/>
+ <objectgroup color="#729fcf" name="walkable" visible="0">
+  <object id="11" name="goal" x="208" y="32" width="16" height="16"/>
  </objectgroup>
 </map>
