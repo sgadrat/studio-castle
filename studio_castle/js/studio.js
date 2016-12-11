@@ -134,13 +134,6 @@ var Studio = {
 		Studio.updateCurrentMap();
 	},
 
-	level6Complete: function() {
-		if (typeof ugly_global === 'undefined') {
-			ugly_global = 'true';
-			alert('GG');
-		}
-	},
-
 	currentLevel: null,
 
 	currentMap: null,
