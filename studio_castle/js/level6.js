@@ -29,6 +29,12 @@ var Level6 = {
 		this.animChangeCooldown = 0;
 
 		this.state_roaming = {
+			chargeCooldown: 5000,
+
+			init: function() {
+				this.chargeCooldown = 5000;
+			},
+
 			updateVelocity: function(boss) {
 				boss.velocity.y += Math.random() * 12 - 6;
 				boss.velocity.y = Math.max(-50, boss.velocity.y);
@@ -36,13 +42,43 @@ var Level6 = {
 				boss.velocity.x += Math.random() * 12 - 6;
 				boss.velocity.x = Math.max(-50, boss.velocity.x);
 				boss.velocity.x = Math.min(50, boss.velocity.x);
+			},
+
+			tick: function(boss, timeElapsed) {
+				this.chargeCooldown = Math.max(0, this.chargeCooldown - timeElapsed);
+				if (this.chargeCooldown == 0) {
+					boss.state_charging.init();
+					boss.state = boss.state_charging;
+				}
 			}
+		};
+
+		this.state_charging = {
+			chargeDuration: 2000,
+
+			init: function() {
+				this.chargeDuration = 2000;
+			},
+
+			updateVelocity: function(boss) {
+				boss.velocity.y = 100 * (Studio.hero.y - boss.y) / Math.abs(Studio.hero.y - boss.y);
+				boss.velocity.x = 100 * (Studio.hero.x - boss.x) / Math.abs(Studio.hero.x - boss.x);
+			},
+
+			tick: function(boss, timeElapsed) {
+				this.chargeDuration = Math.max(0, this.chargeDuration - timeElapsed);
+				if (this.chargeDuration == 0) {
+					boss.state_roaming.init();
+					boss.state = boss.state_roaming;
+				}
+			},
 		};
 
 		this.state = this.state_roaming;
 
 		this.tick = function(timeElapsed) {
 			// Update velocity
+			this.state.tick(this, timeElapsed);
 			this.state.updateVelocity(this);
 
 			// Update animation
