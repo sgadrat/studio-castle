@@ -117,6 +117,7 @@ var Studio = {
 		Studio.currentLevel = Level4;
 		Level4.init();
 		Studio.updateCurrentMap();
+		document.getElementById('sound_button').play();
 	},
 
 	level4Complete: function() {
@@ -418,8 +419,10 @@ var Studio = {
 			var level_layer = Studio.findNamedObject(Studio.currentMap.layers, 'level');
 			if (this.state) {
 				level_layer.data[this.y*16+this.x] = Studio.TILE_TRIGGER_ON;
+				document.getElementById('sound_trigger_on').play();
 			}else {
 				level_layer.data[this.y*16+this.x] = Studio.TILE_TRIGGER_OFF;
+				document.getElementById('sound_trigger_off').play();
 			}
 
 			if (this.callback !== null) {

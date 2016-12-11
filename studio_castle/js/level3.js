@@ -72,5 +72,8 @@ var Level3 = {
 			};
 		}
 		Studio.updateCurrentMap();
+
+		Studio.findNamedObject(Studio.findNamedObject(Studio.currentMap.layers, 'walkable').objects, 'pillar_cmd').visible = false;
+		document.getElementById('sound_button').play();
 	},
 };

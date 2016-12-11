@@ -11,6 +11,7 @@ var Level2 = {
 
 	walkableActivation: function(name) {
 		if (name == 'goal') {
+			document.getElementById('sound_button').play();
 			Studio.level2Complete();
 		}else {
 			Level2.openChest();
@@ -40,6 +41,7 @@ var Level2 = {
 		Level2.showingMessage = true;
 
 		Studio.updateCurrentMap();
+		document.getElementById('sound_chest').play();
 	},
 
 	endMessage: function() {

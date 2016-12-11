@@ -1,7 +1,9 @@
 var Level1 = {
 	walkableActivation: function(name) {
+		document.getElementById('sound_button').play();
 		if (name == 'walkable_1') {
 			Level1.openPillar();
+			Studio.findNamedObject(Studio.findNamedObject(Studio.currentMap.layers, 'walkable').objects, 'walkable_1').visible = false;
 		}else {
 			Studio.level1Complete();
 		}

@@ -33,6 +33,7 @@ var Level4 = {
 	goalReached: function() {
 		rtge.removeObject(Level4.platform);
 		Studio.level4Complete();
+		document.getElementById('sound_button').play();
 	},
 
 	openPillar: function() {
@@ -52,6 +53,9 @@ var Level4 = {
 			};
 		}
 		Studio.updateCurrentMap();
+
+		Studio.findNamedObject(Studio.findNamedObject(Studio.currentMap.layers, 'walkable').objects, 'pillar_cmd').visible = false;
+		document.getElementById('sound_button').play();
 	},
 
 	Platform: function() {

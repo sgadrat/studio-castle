@@ -14,6 +14,7 @@ var Level6 = {
 
 		Studio.findNamedObject(Studio.currentMap.layers, 'gameover').visible = true;
 		Studio.updateCurrentMap();
+		document.getElementById('sound_gameover').play();
 	},
 
 	Boss: function(x, y) {

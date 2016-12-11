@@ -14,6 +14,7 @@ var Level5 = {
 	},
 
 	walkableActivation: function(name) {
+		document.getElementById('sound_button').play();
 		Level5.walkables[name]();
 	},
 
